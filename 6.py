@@ -48,11 +48,11 @@ def calculate_orbits(seq):
 
             while P != 'COM':
                 t += 1
-                if P != "":
-                    k = P
+                k = P
                 for k1 in final_orbits.keys():
                     if k in final_orbits[k1]:
                         P = k1
+                        break
 
         num_indirect_orbits += t
 
@@ -84,6 +84,7 @@ def num_orbit_trasfer(seq):
             if k in orbits[k1]:
                 ans_you.append(k1)
                 P = k1
+                break
 
     k = P_san
     P = ''
@@ -94,6 +95,7 @@ def num_orbit_trasfer(seq):
             if k in orbits[k1]:
                 ans_san.append(k1)
                 P = k1
+                break
 
     nearest_ans = ''
     for x in ans_you:
