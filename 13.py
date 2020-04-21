@@ -1,23 +1,8 @@
+import time
 import numpy as np
-import matplotlib.pyplot as plt
 
 
-class Painter(object):
-    def __init__(self, seq):
-        super().__init__()
-        self.seq = seq
-        self.halt = False
-        self.dir = 0        # U:0, L:1, D:2, R:3
-        self.pos = (0, 0)
-
-    def update_seq(self, seq):
-        self.seq = seq
-
-    def move(self, pos):
-        self.pos = pos
-
-
-def intcode_new(seq, ip, rb, init=0):
+def intcode_new(seq, grid, rb, bp, pp, init=0,):
     """
     Instructions : 5 digits (put 0 if less)
 
@@ -30,12 +15,9 @@ def intcode_new(seq, ip, rb, init=0):
     op = []
 
     while i < len(seq):
-
         inst = list(str(seq[i]))
-
         while len(inst) != 5:
             inst.insert(0, '0')
-        print("I:", i, "INST:", ''.join(inst), "IP:", ip)
 
         op_code = ''.join(inst[-2:])
         mode_1 = inst[2]
@@ -43,7 +25,8 @@ def intcode_new(seq, ip, rb, init=0):
         mode_3 = inst[0]
 
         if op_code == "99":
-            return [-1, -1], -1, -1, seq
+            print("HALT!")
+            return [-1, -1, -1], -1, -1, seq
 
         if op_code == '01':
 
@@ -130,21 +113,31 @@ def intcode_new(seq, ip, rb, init=0):
             i += 4
 
         if op_code == '03':
-            x = ip
+
+            for g in grid:
+                print(''.join(g))
+            time.sleep(0.0000000001)
+
+            if bp > pp:
+                a = 1
+            elif bp < pp:
+                a = -1
+            else:
+                a = 0
+            x = a
 
             if mode_1 == "0":
                 if (seq[i+1]) > len(seq)-1:
                     while len(seq)-1 < seq[i+1]:
                         print("Test")
                         seq.append(0)
-
                 seq[seq[i+1]] = x
             elif mode_1 == "2":
                 if (rel_base + seq[i+1]) > len(seq)-1:
                     while len(seq)-1 < (rel_base + seq[i+1]):
                         seq.append(0)
                 seq[rel_base + seq[i+1]] = x
-            # print(seq[8])
+
             i += 2
 
         if op_code == '04':
@@ -165,7 +158,8 @@ def intcode_new(seq, ip, rb, init=0):
             i += 2
 
             op.append(a)
-            if len(op) == 2:
+            if len(op) == 3:
+
                 return op, rel_base, i, seq
 
         if op_code == '05':
@@ -342,140 +336,82 @@ def intcode_new(seq, ip, rb, init=0):
             i += 2
 
 
-def test(seq):
-    """
-    Return the number of unique pixels it printed on.
-    """
+def draw_tiles(seq):
 
-    visited_cells = {}
-    p = Painter(seq)
-    rb = 0
+    tiles = []
     i = 0
+    rel_base = 0
 
     while True:
-        print(p.pos, rb, {0: "U", 1: "R", 2: "D", 3: "L"}[p.dir])
-        # input()
-
-        if visited_cells.get(p.pos, None) == None:
-            op, rb, i, seq = intcode_new(p.seq, 0, rb, i)
-        else:
-            print("Found!", p.pos)
-            op, rb, i, seq = intcode_new(p.seq, visited_cells[p.pos], rb, i)
-
-        p.update_seq(seq)
-
-        col, turn = op[0], op[1]
-        if col == -1 and turn == -1 and rb == -1 and i == -1:
+        op, rel_base, i, seq = intcode_new(seq, 0, rel_base, 0, 0, i)
+        if rel_base == -1 and i == -1:
             break
+        tiles.append(op)
 
-        print("COL:", {0: "B", 1: "W"}[col],
-              "TURN:", {0: "LEFT", 1: "RIGHT"}[turn])
+    count = 0
+    for t in tiles:
+        if t[2] == 2:
+            count += 1
 
-        visited_cells[p.pos] = col
-
-        if turn == 0:
-            if p.dir == 0:
-                p.dir = 3
-            else:
-                p.dir -= 1
-        elif turn == 1:
-            if p.dir == 3:
-                p.dir = 0
-            else:
-                p.dir += 1
-
-        if p.dir == 0:
-            p.pos = (p.pos[0], p.pos[1]+1)
-        elif p.dir == 1:
-            p.pos = (p.pos[0]+1, p.pos[1])
-        elif p.dir == 2:
-            p.pos = (p.pos[0], p.pos[1]-1)
-        elif p.dir == 3:
-            p.pos = (p.pos[0]-1, p.pos[1])
-
-    print(len(visited_cells))
+    print("NUM BLOCK TILES:", count)
+    input("Press enter to play")
 
 
-def draw2(seq):
+def play(seq):
     """
-    Return the number of unique pixels it printed on.
+    0 -> neutral, -1 -> left, 1 -> right
     """
 
-    visited_cells = {}
-    p = Painter(seq)
-    rb = 0
+    tiles = []
     i = 0
+    rel_base = 0
+    curr_score = 0
+    ip = 0
+    pp = 20
+    bp = 2
 
-    first = True
+    mapper = {
+        0: '.',
+        1: '|',
+        2: '#',
+        3: '=',
+        4: 'O'
+    }
+
+    grid = []
+    for _ in range(22):
+        grid.append(['.']*38)
 
     while True:
-        print(p.pos, rb, {0: "U", 1: "R", 2: "D", 3: "L"}[p.dir])
 
-        if visited_cells.get(p.pos, None) == None:
-            if first:
-                first = False
-                op, rb, i, seq = intcode_new(p.seq, 1, rb, i)
-            else:
-                op, rb, i, seq = intcode_new(p.seq, 0, rb, i)
-        else:
-            print("Found!", p.pos)
-            op, rb, i, seq = intcode_new(p.seq, visited_cells[p.pos], rb, i)
+        op, rel_base, i, seq = intcode_new(seq, grid, rel_base, bp, pp, i)
 
-        p.update_seq(seq)
+        if op[0] == -1 and op[1] == 0:
+            curr_score = op[2]
+            print("-"*20)
+            print("SCORE:", curr_score)
+            print("-"*20)
 
-        col, turn = op[0], op[1]
-        if col == -1 and turn == -1 and rb == -1 and i == -1:
+        elif op[0] >= 0 and op[1] >= 0:
+            grid[op[1]][op[0]] = mapper[op[2]]
+
+            if op[2] == 3:
+                pp = op[0]
+
+            if op[2] == 4:
+                bp = op[0]
+
+        if rel_base == -1 and i == -1:
             break
-
-        print("COL:", {0: "B", 1: "W"}[col],
-              "TURN:", {0: "LEFT", 1: "RIGHT"}[turn])
-
-        visited_cells[p.pos] = col
-
-        if turn == 0:
-            if p.dir == 0:
-                p.dir = 3
-            else:
-                p.dir -= 1
-        elif turn == 1:
-            if p.dir == 3:
-                p.dir = 0
-            else:
-                p.dir += 1
-
-        if p.dir == 0:
-            p.pos = (p.pos[0], p.pos[1]+1)
-        elif p.dir == 1:
-            p.pos = (p.pos[0]+1, p.pos[1])
-        elif p.dir == 2:
-            p.pos = (p.pos[0], p.pos[1]-1)
-        elif p.dir == 3:
-            p.pos = (p.pos[0]-1, p.pos[1])
-
-    print(len(visited_cells))
-    return visited_cells
+        tiles.append(op)
 
 
 if __name__ == "__main__":
-    """
-    * All panels initially black
-    * I/P : 0 -> if robot over black panel, 1 -> over black panel
-    * O/P : first -> color to be printed (0 -> B, 1 -> W)
-            second -> turn direction (0->turn left, 1->turn right)
-    * Move one step ahead after turning
-    """
-    seq = list(map(int, open("11.txt", "r").read().split(",")))
+    seq = list(map(int, open("13.txt", "r").read().split(",")))
 
-    # Part 1
-    draw(seq)
+    # part 1
+    draw_tiles(seq)
 
-    # Part 2
-    cells = draw2(seq)
-
-    grid = np.zeros((50, 50))
-
-    for c in cells:
-        grid[c[0]][c[1]] = cells[c]
-
-    plt.imshow(grid)
-    plt.show()
+    # part 2
+    seq[0] = 2
+    play(seq)

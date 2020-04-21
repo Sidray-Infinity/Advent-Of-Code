@@ -157,6 +157,13 @@ def simulate2():
         s.update_history()
 
 
+def simulate3():
+    pos = np.asarray([[],
+                      [],
+                      [],
+                      []])
+
+
 if __name__ == "__main__":
 
     simulate2()
