@@ -9,16 +9,14 @@ def hasGold(graph, x):
     return any([hasGold(graph, c) for c in graph[x]])
 
 def countBags(graph, x):
-    print(x, graph[x])
-    print()
-    if '' in graph[x[1]][0][1]:
-        return x[0]
-    if graph[x][0] == 0:
-        return 0
-
     sum_ = 0
-    for c in graph[x]:
-        sum_ += c[0] * countBags(graph, c)
+    for e in x:
+        sum_ += e[0]
+        if graph[e[1]][0][0] == 0:
+            continue
+        
+        sum_ += e[0] * countBags(graph, graph[e[1]])
+
     return sum_
 
 if __name__ == "__main__":
@@ -43,6 +41,6 @@ if __name__ == "__main__":
                 graph[parent].append((0, ""))
             else:
                 graph[parent].append((int(num), ' '.join(cbags.split('.')[0].split(' ')[0:2])))
-    print(graph)
-
-    print(countBags(graph, 'shiny gold'))
+    
+    count = countBags(graph, graph['shiny gold'])
+    print('Part2:', count)
