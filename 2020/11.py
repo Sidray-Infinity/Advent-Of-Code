@@ -43,9 +43,7 @@ def step2(g):
                 continue
 
             ti = i-1
-            while True:
-                if not isValid(ti, j, tg):
-                    break
+            while isValid(ti, j, tg):
                 if tg[ti][j] == '#':
                     count += 1
                     break
@@ -55,9 +53,7 @@ def step2(g):
 
             ti = i-1
             tj = j-1
-            while True:
-                if not isValid(ti, tj, tg):
-                    break
+            while isValid(ti, tj, tg):
                 if tg[ti][tj] == '#':
                     count += 1
                     break
@@ -67,9 +63,7 @@ def step2(g):
                 tj -= 1
 
             tj = j-1
-            while True:
-                if not isValid(i, tj, tg):
-                    break
+            while isValid(i, tj, tg):
                 if tg[i][tj] == '#':
                     count += 1
                     break
@@ -79,9 +73,7 @@ def step2(g):
 
             ti = i+1
             tj = j-1
-            while True:
-                if not isValid(ti, tj, tg):
-                    break
+            while isValid(ti, tj, tg):
                 if tg[ti][tj] == '#':
                     count += 1
                     break
@@ -92,9 +84,7 @@ def step2(g):
 
 
             ti = i+1
-            while True:
-                if not isValid(ti, j, tg):
-                    break
+            while isValid(ti, j, tg):
                 if tg[ti][j] == '#':
                     count += 1
                     break
@@ -104,9 +94,7 @@ def step2(g):
 
             ti = i+1
             tj = j+1
-            while True:
-                if not isValid(ti, tj, tg):
-                    break
+            while isValid(ti, tj, tg):
                 if tg[ti][tj] == '#':
                     count += 1
                     break
@@ -116,9 +104,7 @@ def step2(g):
                 tj += 1
 
             tj = j+1
-            while True:
-                if not isValid(i, tj, tg):
-                    break
+            while isValid(i, tj, tg):
                 if tg[i][tj] == '#':
                     count += 1
                     break
@@ -128,9 +114,7 @@ def step2(g):
 
             ti = i-1
             tj = j+1
-            while True:
-                if not isValid(ti, tj, tg):
-                    break
+            while isValid(ti, tj, tg):
                 if tg[ti][tj] == '#':
                     count += 1
                     break
