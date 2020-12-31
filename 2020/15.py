@@ -1,50 +1,21 @@
 
 def getNthNumberSpoken(n, data):
-    turnCount = 1
-    ageTracker = {}
-    for d in data:
-        if ageTracker.get(d, None) != None:
-            if ageTracker[d][1] is None:
-                ageTracker[d][1] = turnCount
-            else:
-                ageTracker[d][0] = ageTracker[d][1]
-                ageTracker[d][1] = turnCount
+    age_tracker = {num:i+1 for i, num in enumerate(data[:-1])}
+    next_num = data[-1]
+    spoken_num = None
+    for turn in range(len(data)+1, n+1):
+        # print(turn)
+        last_turn_count = turn - 1
+        if next_num in age_tracker:
+            spoken_num = last_turn_count - age_tracker[next_num]
         else:
-            ageTracker[d] = [turnCount, None]
-        turnCount += 1
-    
-    lastNum = data[-1]
+            spoken_num = 0
+        age_tracker[next_num] = last_turn_count
+        next_num = spoken_num
 
-    while turnCount <= n:
-        print(turnCount)
-        if ageTracker[lastNum][1] == None:
-            lastNum = 0
-            if ageTracker.get(0, None) != None:
-                if ageTracker[0][1] is None:
-                    ageTracker[0][1] = turnCount
-                else:
-                    ageTracker[0][0] = ageTracker[0][1]
-                    ageTracker[0][1] = turnCount
-            else:
-                ageTracker[0] = [turnCount, None]
-        else:
-            lastNum = ageTracker[lastNum][1] - ageTracker[lastNum][0]
-            if ageTracker.get(lastNum, None) != None:
-                if ageTracker[lastNum][1] is None:
-                    ageTracker[lastNum][1] = turnCount
-                else:
-                    ageTracker[lastNum][0] = ageTracker[lastNum][1]
-                    ageTracker[lastNum][1] = turnCount
-            else:
-                ageTracker[lastNum] = [turnCount, None]
-
-
-        turnCount += 1
-
-    return lastNum
+    return spoken_num
 
 if __name__ == "__main__":
     data = list(map(int, open("15.txt").read().split(',')))
-    
-    print('Part1:', getNthNumberSpoken(2020, data))
+    print('Part1:', getNthNumberSpoken(2020, data)) # O(n)
     print('Part2:', getNthNumberSpoken(30000000, data))
