@@ -15,9 +15,9 @@ func main() {
 		return
 	}
 
-	Data := string(data)
-	splittedData := strings.Split(Data, "\r\n")
-	count := 0
+	var Data string = string(data)
+	var splittedData []string = strings.Split(Data, "\r\n")
+	var count int = 0
 	for _, box := range splittedData {
 		dims := strings.Split(box, "x")
 
