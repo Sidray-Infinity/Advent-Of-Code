@@ -21,7 +21,7 @@ func main() {
 		}
 		count += 1
 	}
-	count = 0
+	count = 1
 	for true {
 		secretKey := []byte("yzbqklnj" + strconv.Itoa(count))
 		hash = md5.Sum(secretKey)

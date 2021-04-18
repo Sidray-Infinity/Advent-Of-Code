@@ -76,8 +76,6 @@ func main() {
 		} else {
 			roboSantaSet[currRoboSantaPos] = struct{}{}
 		}
-		// fmt.Println(currSantaPos, currRoboSantaPos)
-
 	}
 	commonPos := 0
 	for k, _ := range santaSet {
