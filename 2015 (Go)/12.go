@@ -45,7 +45,7 @@ func pj2(x interface{}, sum *int) {
 }
 
 func main() {
-	data, _ := ioutil.ReadFile("12.txt")
+	data, _ := ioutil.ReadFile("12.json")
 	var store interface{}
 	json.Unmarshal(data, &store)
 	sum := 0
