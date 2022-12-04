@@ -32,10 +32,10 @@ fn main() {
         let ranges: Vec<&str> = pair.split(",").collect();
         let range_1: Vec<&str> = ranges[0].split("-").collect();
         let range_2: Vec<&str> = ranges[1].split("-").collect();
-        let l0: i32 = range_1[0].parse::<i32>().expect("Should have been able to conver to i32");
-        let l1: i32 = range_2[0].parse::<i32>().expect("Should have been able to conver to i32");
-        let u0: i32 = range_1[1].parse::<i32>().expect("Should have been able to conver to i32");
-        let u1: i32 = range_2[1].parse::<i32>().expect("Should have been able to conver to i32");
+        let l0: i32 = range_1[0].parse().expect("Should have been able to conver to i32");
+        let l1: i32 = range_2[0].parse().expect("Should have been able to conver to i32");
+        let u0: i32 = range_1[1].parse().expect("Should have been able to conver to i32");
+        let u1: i32 = range_2[1].parse().expect("Should have been able to conver to i32");
         if is_fully_contained(l0, u0, l1, u1) {
             full_contained_pairs += 1;
         }
