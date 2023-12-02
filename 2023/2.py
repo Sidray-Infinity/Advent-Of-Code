@@ -40,7 +40,6 @@ for row in  rows:
         cubes = s.split(", ")
         for c in cubes:
             cubes_info = c.split(" ")
-            print(cubes_info)
             if cubes_info[1] == "red":
                 nr = max(nr, int(cubes_info[0]))
             if cubes_info[1] == "green":
